@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".lobby">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Lobby"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="130dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <Button
+        android:id="@+id/create_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="create room"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+    <TextView
+        android:id="@+id/key_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/create_room"
+        app:layout_constraintStart_toEndOf="@+id/create_room"
+        app:layout_constraintTop_toTopOf="@+id/create_room" />
+
+    <Button
+        android:id="@+id/join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="join"
+        app:layout_constraintStart_toStartOf="@+id/create_room"
+        app:layout_constraintTop_toBottomOf="@+id/create_room" />
+
+    <EditText
+        android:id="@+id/enter_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Enter Code"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/join"
+        app:layout_constraintStart_toStartOf="@+id/key_create"
+        app:layout_constraintTop_toTopOf="@+id/join"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="start"
+        app:layout_constraintBottom_toBottomOf="@+id/ready"
+        app:layout_constraintStart_toEndOf="@+id/ready"
+        app:layout_constraintTop_toTopOf="@+id/ready" />
+
+    <Button
+        android:id="@+id/ready"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="ready"
+        app:layout_constraintStart_toStartOf="@+id/join"
+        app:layout_constraintTop_toBottomOf="@+id/join" />
+</androidx.constraintlayout.widget.ConstraintLayout>
