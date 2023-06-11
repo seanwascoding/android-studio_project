@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class lobby extends AppCompatActivity {
 
@@ -63,7 +64,7 @@ public class lobby extends AppCompatActivity {
 
         /** 登入系統 */
         create_room.setOnClickListener(v -> {
-            String random_create = generateRandomValue(10);
+            String random_create=(generateRandomValue(10));
             key_create.setText(random_create);
             try {
                 JSONObject json_create = new JSONObject();
@@ -85,7 +86,6 @@ public class lobby extends AppCompatActivity {
                     json_join.put("name", name);
                     json_join.put("state", "not ready");
                     webSocketClient.send(json_join.toString());
-                    json_join = null; //釋放內存
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -125,6 +125,8 @@ public class lobby extends AppCompatActivity {
             }
             Bundle data=new Bundle();
             data.putSerializable("player", items);
+            data.putString("name", name);
+            data.putString("key", key_create.getText().toString());
             Intent intent_start=new Intent(this, start_game.class);
             intent_start.putExtras(data);
             startActivity(intent_start);
@@ -193,7 +195,7 @@ public class lobby extends AppCompatActivity {
                 Log.d("onMessage", message);
                 try {
                     message_temp = new JSONObject(message).getString("signal");
-                    if (message_temp.equals(key_create.getText().toString())) {
+                    if (message_temp.equals("successful create")) {
                         runOnUiThread(() -> {
                             Toast.makeText(lobby.this, "Create party successfully", Toast.LENGTH_SHORT).show();
                             items.clear();
@@ -234,7 +236,6 @@ public class lobby extends AppCompatActivity {
                                 if (item.name.equals(client_name)) {
                                     item.state = client_state;
                                     recyclerView.setAdapter(adapter);
-
                                     break;
                                 }
                             }
@@ -242,6 +243,8 @@ public class lobby extends AppCompatActivity {
                     }else if(message_temp.equals("start")){
                         Bundle data=new Bundle();
                         data.putSerializable("player", items);
+                        data.putString("name", name);
+                        data.putString("key", key_enter.getText().toString());
                         Intent intent=new Intent(lobby.this, start_game.class);
                         intent.putExtras(data);
                         startActivity(intent);
