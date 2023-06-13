@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -37,7 +38,6 @@ public class lobby extends AppCompatActivity {
     private Button join;
     private EditText key_enter;
     private String name;
-    private String password;
     private Button start;
 
     @Override
@@ -58,9 +58,7 @@ public class lobby extends AppCompatActivity {
         /** user message */
         Intent intent = getIntent();
         name = intent.getStringExtra("account");
-        password = intent.getStringExtra("password");
         Log.d("intent", intent.getStringExtra("account"));
-        Log.d("intent", intent.getStringExtra("password"));
 
         /** 登入系統 */
         create_room.setOnClickListener(v -> {
@@ -130,6 +128,8 @@ public class lobby extends AppCompatActivity {
             Intent intent_start=new Intent(this, start_game.class);
             intent_start.putExtras(data);
             startActivity(intent_start);
+            stopService(new Intent(this, music.class));
+            finish();
         });
 
 
@@ -248,6 +248,8 @@ public class lobby extends AppCompatActivity {
                         Intent intent=new Intent(lobby.this, start_game.class);
                         intent.putExtras(data);
                         startActivity(intent);
+                        stopService(new Intent(lobby.this, music.class));
+                        finish();
                     } else if (message_temp.equals("connecting")) {
                         Log.d("connecting", message_temp);
                     } else {

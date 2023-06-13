@@ -1,10 +1,7 @@
 package com.example.project_game;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,6 +9,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -31,6 +32,8 @@ public class start_game extends AppCompatActivity {
     private WebSocketClient webSocketClient;
     private ProgressBar blood;
     private JSONObject json_open = new JSONObject();
+    private String name;
+    private MediaPlayer music;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,9 @@ public class start_game extends AppCompatActivity {
         connectWebSocket();
 
         /** declare */
+        music=MediaPlayer.create(this, R.raw.abstractanxiety);
+        music.setLooping(true);
+        music.start();
         RecyclerView recyclerView = findViewById(R.id.recyclerView2);
         SeekBar random_value = findViewById(R.id.random_value);
         Button attack = findViewById(R.id.attack);
@@ -51,7 +57,7 @@ public class start_game extends AppCompatActivity {
 
         /** data */
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
+        name = intent.getStringExtra("name");
         String key = intent.getStringExtra("key");
         ArrayList<Item> items_temp = (ArrayList<Item>) intent.getSerializableExtra("player");
         for (Item item : items_temp) {
@@ -107,7 +113,7 @@ public class start_game extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Wrong position", Toast.LENGTH_SHORT).show();
                 handler.removeCallbacks(runnable);
-                webSocketClient.send("Wrong attack");
+//                webSocketClient.send("Wrong attack");
             }
         });
 
@@ -160,6 +166,7 @@ public class start_game extends AppCompatActivity {
                         } else {
                             Log.d("kill the monster:", "victory");
                             runOnUiThread(() -> Toast.makeText(start_game.this, "Victory", Toast.LENGTH_SHORT).show());
+                            startActivity(new Intent(start_game.this, lobby.class).putExtra("account", name));
                             finish();
                         }
                     } else if (message_temp.equals("loading")) {
@@ -192,6 +199,12 @@ public class start_game extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         webSocketClient.close();
+        // 停止播放音乐并释放资源
+        if (music != null) {
+            music.stop();
+            music.release();
+            music = null;
+        }
     }
 
 }

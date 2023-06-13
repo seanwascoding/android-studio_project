@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent=new Intent(this, music.class);
+        startService(intent);
+
         account = findViewById(R.id.account);
         password = findViewById(R.id.password);
         Button login = findViewById(R.id.login);
