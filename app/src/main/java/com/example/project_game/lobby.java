@@ -12,8 +12,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -45,6 +48,9 @@ public class lobby extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
         connectWebSocket();
+
+        ImageView gifImageView = findViewById(R.id.gif_lobby);
+        Glide.with(this).asGif().load(R.drawable.sus).into(gifImageView);
 
         /** Declare variable */
         create_room = findViewById(R.id.create_room);
@@ -170,7 +176,7 @@ public class lobby extends AppCompatActivity {
     private void connectWebSocket() {
         URI uri_2;
         try {
-            uri_2 = new URI("ws://26.164.96.164:8080/");
+            uri_2 = new URI("ws://192.168.1.108:8080/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;

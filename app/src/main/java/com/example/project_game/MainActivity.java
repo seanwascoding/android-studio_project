@@ -9,7 +9,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +36,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /** music player */
         Intent intent=new Intent(this, music.class);
         startService(intent);
 
+        ImageView gifImageView = findViewById(R.id.gif);
+        Glide.with(this).asGif().load(R.drawable.poop).into(gifImageView);
+
+        /**  */
         account = findViewById(R.id.account);
         password = findViewById(R.id.password);
         Button login = findViewById(R.id.login);
@@ -45,11 +52,10 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(v -> {
             try {
                 if(account.length()>0 && password.length()>0){
-                    address="http://26.164.96.164:8080/login";
+                    address="http://192.168.1.108:8080/login";
                     new PostDate().execute(new JSONObject().put(account.getText().toString(), password.getText().toString()).toString());
                 }
                 else{
-                    Toast.makeText(this, "enter account & password", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -57,11 +63,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         registe.setOnClickListener(v -> {
-            try {
-                address="http://26.164.96.164:8080/registe";
-                new PostDate().execute(new JSONObject().put(account.getText().toString(), password.getText().toString()).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(account.length()>0 && password.length()>0){
+                try {
+                    address="http://192.168.1.108:8080/registe";
+                    new PostDate().execute(new JSONObject().put(account.getText().toString(), password.getText().toString()).toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                Toast.makeText(this, "enter account & password", Toast.LENGTH_SHORT).show();
             }
         });
 
