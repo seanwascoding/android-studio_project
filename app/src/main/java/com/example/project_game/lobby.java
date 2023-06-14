@@ -120,22 +120,28 @@ public class lobby extends AppCompatActivity {
 
         /** 開始遊戲 */
         start.setOnClickListener(v->{
-            try {
-                JSONObject json_start=new JSONObject();
-                json_start.put("3", "start");
-                webSocketClient.send(json_start.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+            for(Item item:items){
+                if(item.state.equals("ready")){
+                    try {
+                        JSONObject json_start=new JSONObject();
+                        json_start.put("3", "start");
+                        webSocketClient.send(json_start.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Bundle data=new Bundle();
+                    data.putSerializable("player", items);
+                    data.putString("name", name);
+                    data.putString("key", key_create.getText().toString());
+                    Intent intent_start=new Intent(this, start_game.class);
+                    intent_start.putExtras(data);
+                    startActivity(intent_start);
+                    stopService(new Intent(this, music.class));
+                    finish();
+                    return;
+                }
             }
-            Bundle data=new Bundle();
-            data.putSerializable("player", items);
-            data.putString("name", name);
-            data.putString("key", key_create.getText().toString());
-            Intent intent_start=new Intent(this, start_game.class);
-            intent_start.putExtras(data);
-            startActivity(intent_start);
-            stopService(new Intent(this, music.class));
-            finish();
+            Toast.makeText(this, "player not ready", Toast.LENGTH_SHORT).show();
         });
 
 
