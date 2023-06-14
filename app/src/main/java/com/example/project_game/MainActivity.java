@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(v -> {
             try {
                 if(account.length()>0 && password.length()>0){
-                    address="http://192.168.1.108:8080/login";
+                    address="http://26.164.96.164:8080/login";
                     new PostDate().execute(new JSONObject().put(account.getText().toString(), password.getText().toString()).toString());
                 }
                 else{
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         registe.setOnClickListener(v -> {
             if(account.length()>0 && password.length()>0){
                 try {
-                    address="http://192.168.1.108:8080/registe";
+                    address="http://26.164.96.164:8080/registe";
                     new PostDate().execute(new JSONObject().put(account.getText().toString(), password.getText().toString()).toString());
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -176,7 +176,7 @@ public class lobby extends AppCompatActivity {
     private void connectWebSocket() {
         URI uri_2;
         try {
-            uri_2 = new URI("ws://192.168.1.108:8080/");
+            uri_2 = new URI("ws://26.164.96.164:8080/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
