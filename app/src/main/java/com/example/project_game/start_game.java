@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class start_game extends AppCompatActivity {
     private String name;
     private MediaPlayer music;
     private AtomicInteger user_blood = new AtomicInteger(5);
+    private TextView user_blood_display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class start_game extends AppCompatActivity {
         blood.setProgress(1000);
         random_value.setEnabled(false);
         click.setEnabled(false);
+        user_blood_display=findViewById(R.id.user_blood_num);
+        user_blood_display.setText(String.valueOf(user_blood.get()));
 
         /** data */
         Intent intent = getIntent();
@@ -149,11 +153,14 @@ public class start_game extends AppCompatActivity {
                 Toast.makeText(this, "Wrong position", Toast.LENGTH_SHORT).show();
                 handler.removeCallbacks(runnable);
                 user_blood.addAndGet(-1);
+                user_blood_display.setText(String.valueOf(user_blood.get()));
                 Toast.makeText(start_game.this, "玩家生命剩下:" + user_blood, Toast.LENGTH_SHORT).show();
                 if (user_blood.get() == 0) {
-                    Toast.makeText(this, "失敗，請再挑戰", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, lobby.class).putExtra("account", name));
-                    finish();
+                    try {
+                        webSocketClient.send(new JSONObject().put("4", "loss").toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -171,7 +178,7 @@ public class start_game extends AppCompatActivity {
     private void connectWebSocket() {
         URI uri_2;
         try {
-            uri_2 = new URI("ws://26.164.96.164:8080/");
+            uri_2 = new URI("ws://192.168.1.108:8080/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -197,33 +204,41 @@ public class start_game extends AppCompatActivity {
                         String moster_blood = new JSONObject(message).getString("value");
                         if (Integer.parseInt(moster_blood) > 0) {
                             blood.setProgress(Integer.parseInt(moster_blood));
-                            runOnUiThread(()-> Toast.makeText(start_game.this, "Boss:"+Integer.parseInt(moster_blood), Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(start_game.this, "Boss:" + Integer.parseInt(moster_blood), Toast.LENGTH_SHORT).show());
                         } else {
                             Log.d("kill the monster:", "victory");
                             runOnUiThread(() -> Toast.makeText(start_game.this, "Victory", Toast.LENGTH_SHORT).show());
-                            startActivity(new Intent(start_game.this, lobby.class).putExtra("account", name));
+                            Intent intent = new Intent(start_game.this, victory_loss.class).putExtra("account", name);
+                            intent.putExtra("result", "victory");
+                            startActivity(intent);
                             finish();
                         }
-                    } else if (message_temp.equals("loading")) {
-                        Toast.makeText(start_game.this, "Working to loading", Toast.LENGTH_SHORT).show();
+                    } else if (message_temp.equals("loss")) {
+                        runOnUiThread(() -> runOnUiThread(() -> Toast.makeText(start_game.this, "失敗，請再挑戰", Toast.LENGTH_SHORT).show()));
+                        Intent intent = new Intent(start_game.this, victory_loss.class).putExtra("account", name);
+                        intent.putExtra("result", "loss");
+                        startActivity(intent);
+                        finish();
                     } else if (message_temp.equals("defend")) {
                         String result = new JSONObject(message).getString("value");
                         if (result.equals("防禦失敗")) {
                             user_blood.addAndGet(-1);
+                            user_blood_display.setText(String.valueOf(user_blood.get()));
                         }
                         runOnUiThread(() -> {
                             Toast.makeText(start_game.this, result, Toast.LENGTH_SHORT).show();
                             Toast.makeText(start_game.this, "玩家生命剩下:" + user_blood, Toast.LENGTH_SHORT).show();
                             if (user_blood.get() == 0) {
-                                Toast.makeText(start_game.this, "失敗，請再挑戰", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(start_game.this, lobby.class).putExtra("account", name));
-                                startService(new Intent(start_game.this, music.class));
+                                try {
+                                    webSocketClient.send(new JSONObject().put("4", "loss").toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     } else {
                         Log.d("error message:", "search fail");
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -254,6 +269,5 @@ public class start_game extends AppCompatActivity {
             music.release();
             music = null;
         }
-        startService(new Intent(start_game.this, music.class));
     }
 }

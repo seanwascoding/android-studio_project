@@ -182,7 +182,7 @@ public class lobby extends AppCompatActivity {
     private void connectWebSocket() {
         URI uri_2;
         try {
-            uri_2 = new URI("ws://26.164.96.164:8080/");
+            uri_2 = new URI("ws://192.168.1.108:8080/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -220,7 +220,7 @@ public class lobby extends AppCompatActivity {
                         client_state = new JSONObject(message).getString("state");
                         host = new JSONObject(message).getString("host");
                         runOnUiThread(() -> {
-                            Toast.makeText(lobby.this, client_name, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(lobby.this, host+" room", Toast.LENGTH_SHORT).show();
                             if(!host_exist){
                                 items.add(new Item(host, "host"));
                                 host_exist=true;
@@ -237,6 +237,7 @@ public class lobby extends AppCompatActivity {
                         client_name = new JSONObject(message).getString("user");
                         client_state = new JSONObject(message).getString("state");
                         runOnUiThread(() -> {
+                            Toast.makeText(lobby.this, client_name+" join the room", Toast.LENGTH_SHORT).show();
                             items.add(new Item(client_name, client_state));
                             recyclerView.setAdapter(adapter);
                         });

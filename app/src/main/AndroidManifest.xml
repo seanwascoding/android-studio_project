@@ -15,23 +15,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
+        <activity
+            android:name=".victory_loss"
+            android:exported="false"
+            android:label="勝利大廳">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
         <service
             android:name=".music"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".start_game"
-            android:exported="false">
+            android:exported="false"
+            android:label="BOSS">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".lobby"
-            android:label="大廳"
-            android:exported="false">
+            android:exported="false"
+            android:label="大廳">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
